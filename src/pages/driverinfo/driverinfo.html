@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title>{{driver.name}}</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="close()">Close</button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-item>
+    <ion-avatar item-left>
+      <img src="{{driver.photoURL}}"/>
+    </ion-avatar>
+    <h3>{{driver.name}}</h3>
+    <p>{{driver.email}}</p>
+    <a ion-button item-right href="tel:{{driver.phoneNumber}}">Call: {{driver.phoneNumber}}</a>
+  </ion-item>
+  <ion-segment [(ngModel)]="tabs">
+    <ion-segment-button value="carinfo">
+      INFORMACION DEL VEHICULO
+    </ion-segment-button>
+    <ion-segment-button value="ridehistroy" (click)="getTrips()">
+      Ride History
+    </ion-segment-button>
+  </ion-segment>
+  <div [ngSwitch]="tabs">
+      <div *ngSwitchCase="'carinfo'">
+          <ion-item>
+            <ion-label stacked>CAR TYPE</ion-label>
+            <ion-input type="text" [(ngModel)]="driver.type" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>PLATE NUMBER</ion-label>
+            <ion-input type="text" [(ngModel)]="driver.plate"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>CAR BRAND</ion-label>
+            <ion-input type="text" [(ngModel)]="driver.brand"></ion-input>
+            <a *ngIf="driver.carImg != null" href="{{driver.carImg}}" target="_blank" ion-button item-right clear>View Image</a>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>LICENCE NUMBER</ion-label>
+            <ion-input type="text" [(ngModel)]="driver.licence"></ion-input>
+            <a *ngIf="driver.licenceImg != null" href="{{driver.licenceImg}}" target="_blank" ion-button item-right clear>View Doc</a>
+          </ion-item>
+          <ion-item>
+            <ion-label stacked>INSURANCE NUMBER</ion-label>
+            <ion-input type="text" [(ngModel)]="driver.insurance"></ion-input>
+            <a *ngIf="driver.insuranceImg != null" href="{{driver.insuranceImg}}" target="_blank" ion-button item-right clear>View Doc</a>
+          </ion-item>
+          <ion-item>
+              <button ion-button block (click)="updateDriver()">Update</button>
+          </ion-item>
+      </div>
+      <div *ngSwitchCase="'ridehistroy'">
+        <div *ngFor="let trip of trips" style="border: 1px solid #eee; padding: 5px;margin: 1px;">
+          <span style="float:right; padding: 10px;">
+            <b>{{trip.currency}}{{trip.fee}}</b>
+            <ion-icon *ngIf="trip.paymentMethod == 'cash'" name="cash"></ion-icon>
+            <ion-icon *ngIf="trip.paymentMethod == 'card'" name="card"></ion-icon>
+            <br>
+            <i *ngIf="trip.status == 'canceled'">{{trip.status}}</i>
+          </span>
+          <div>
+            <h6>{{ trip.pickedUpAt }} <span *ngIf="trip.rating" style="color:#FFC107"> - {{trip.rating}} <ion-icon name="star"></ion-icon></span></h6>
+            <p style="color:#888">{{ trip.origin.vicinity }} -> {{ trip.destination.vicinity }} </p>
+          </div>
+        </div>
+      </div>
+  </div>
+</ion-content>
